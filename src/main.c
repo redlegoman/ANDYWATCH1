@@ -9,6 +9,7 @@ static TextLayer *s_date_layer;
 static TextLayer *s_leftbar_layer;
 static TextLayer *s_rightbar_layer;
 static TextLayer *s_left_layer;
+static TextLayer *s_right_layer;
 
 static void update_time(BatteryChargeState chargeState) {
   // Get a tm structure
@@ -19,7 +20,8 @@ static void update_time(BatteryChargeState chargeState) {
   static char buffer[] = "00:00";
   static char day[] = "  Saturday";
   static char date[] = "12 Sep";
-  
+  static char secs[] = "00";
+
   static char percent_show[] = " 00 %";
   uint8_t percent = chargeState.charge_percent;
   snprintf(percent_show, 6, " %i%%", percent);
@@ -39,11 +41,13 @@ static void update_time(BatteryChargeState chargeState) {
 
   strftime(day, sizeof("Saturday"), "  %A", tick_time);
   strftime(date, sizeof("12 Sep"), "%d %b", tick_time);
+  strftime(secs, sizeof("00"), "%S", tick_time);
   
   // Display this time on the TextLayer
   text_layer_set_text(s_time_layer, buffer);
     text_layer_set_text(s_day_layer, day);
     text_layer_set_text(s_date_layer, date);
+    text_layer_set_text(s_right_layer, secs);
   
   text_layer_set_text(s_left_layer, percent_show);
 
@@ -85,6 +89,12 @@ static void main_window_load(Window *window) {
 
   text_layer_set_text(s_left_layer, "00 %");
 
+  s_right_layer = text_layer_create(GRect(124, 153, 144, 20));
+  text_layer_set_background_color(s_right_layer, GColorClear);
+  text_layer_set_text_color(s_right_layer, GColorBlack);
+
+  text_layer_set_text(s_right_layer, "00 ");
+
   
   // Improve the layout to be more like a watchface
   text_layer_set_font(s_time_layer, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
@@ -103,6 +113,7 @@ static void main_window_load(Window *window) {
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_leftbar_layer));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_rightbar_layer));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_left_layer));
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_right_layer));
   
 
 
@@ -139,7 +150,7 @@ static void init() {
   window_stack_push(s_main_window, true);
   
   // Register with TickTimerService
-  tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
+  tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
 }
 
 static void deinit() {
