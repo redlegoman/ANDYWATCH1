@@ -1,0 +1,19 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "redlegoman",
+    "longName": "AndyWatch1",
+    "projectType": "native",
+    "resources": {
+        "media": []
+    },
+    "shortName": "AndyWatch1",
+    "uuid": "5f4a02cf-a514-45ec-973d-0b6d20f26eb6",
+    "versionCode": 1,
+    "versionLabel": "0.1",
+    "watchapp": {
+        "watchface": true
+    }
+}
